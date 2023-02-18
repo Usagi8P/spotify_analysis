@@ -1,0 +1,5 @@
+mypy == 1.0.1
+spotipy == 2.22.1
+pandas == 1.5.3
+ipykernel == 6.21.2
+seaborn == 0.12.2
