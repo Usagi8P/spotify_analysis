@@ -1,21 +1,27 @@
 import spotipy #type: ignore
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth #type: ignore
 from api_setup import logger_setup, set_env_variables
+from datetime import datetime
 
 
-def get_playlists() -> list[str]:
-    # Reads playlist codes from the secrets folder and loads them into a list
-    playlists: list[str] = []
+def get_playlists() -> list[tuple[str,str,datetime]]:
+    """
+    Reads playlist codes from the secrets folder and loads them into a list
+    """
+    owner_data: list[tuple[str,str,datetime]] = []
 
     with open('secrets/playlists.txt','r') as f:
         lines = f.readlines() 
 
         for line in lines:
             playlist_id = line[line.find('=')+1:-1]
+            name = line[0:line.find('_')]
+            stored_date = line[line.find('_')+1:line.find('=')]
+            playlist_date = datetime.strptime(stored_date, '%b_%y')
             if playlist_id:
-                playlists.append(playlist_id)
+                owner_data.append((playlist_id,name.capitalize(),playlist_date))
     
-    return playlists
+    return owner_data
 
 
 def get_songs_in_playlist(sp,pl_id):
@@ -30,7 +36,7 @@ def get_songs_in_playlist(sp,pl_id):
 
 
 def create_total_track_list(sp) -> set[str]:
-    playlists: list[str] = get_playlists()
+    playlists, names = get_playlists()
 
     track_ids: set[str] = set()
     for playlist in playlists:

@@ -1,12 +1,12 @@
 import sqlite3
 
 
-owner_table = '''CREATE TABLE owners
+owner_table = '''CREATE TABLE IF NOT EXISTS owners
                  (playlist_id TEXT PRIMARY KEY,
                   owner_name TEXT,
                   date DATE)'''
 
-track_table = '''CREATE TABLE songs
+track_table = '''CREATE TABLE IF NOT EXISTS songs
                  (track_id TEXT PRIMARY KEY,
                   analysis_url TEXT,
                   acousticness REAL CHECK (acousticness >= 0 AND acousticness <= 1),
@@ -22,15 +22,25 @@ track_table = '''CREATE TABLE songs
                   time_signature INTEGER,
                   valence REAL CHECK (valence >= 0 AND valence <= 1))'''
 
-fake_names_table = '''CREATE TABLE fake_names
+fake_names_table = '''CREATE TABLE IF NOT EXISTS fake_names
                       (owner_name TEXT PRIMARY KEY,
                        fake_name TEXT)'''
+
+playlist_songs = '''CREATE TABLE IF NOT EXISTS playlist_songs
+                    (playlist_id INTEGER,
+                     track_id INTEGER,
+                     PRIMARY KEY (playlist_id, track_id),
+                     FOREIGN KEY (playlist_id) REFERENCES owners(playlist_id),
+                     FOREIGN KEY (track_id) REFERENCES songs(track_id))'''
 
 
 def create_database() -> None:
     con = sqlite3.connect("spotify.db")
     cur = con.cursor()
     cur.execute(fake_names_table)
+    cur.execute(owner_table)
+    cur.execute(track_table)
+    cur.execute(playlist_songs)
     con.commit()
     con.close()
 
