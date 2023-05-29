@@ -2,11 +2,12 @@ import spotipy #type: ignore
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth #type: ignore
 from api_setup import logger_setup, set_env_variables
 from datetime import datetime
+from typing import Any
 
 
 def get_playlists() -> list[tuple[str,str,datetime]]:
     """
-    Reads playlist codes from the secrets folder and loads them into a list
+    Reads playlist codes from the secrets folder and loads them into a list.
     """
     owner_data: list[tuple[str,str,datetime]] = []
 
@@ -24,7 +25,10 @@ def get_playlists() -> list[tuple[str,str,datetime]]:
     return owner_data
 
 
-def get_songs_in_playlist(sp,pl_id):
+def get_songs_in_playlist(sp:spotipy.Spotify, pl_id:str):
+    """
+    Pulls the songs for a single playlist.
+    """
     offset = 0
 
     response = sp.playlist_items(pl_id,
@@ -35,12 +39,12 @@ def get_songs_in_playlist(sp,pl_id):
     return response
 
 
-def create_total_track_list(sp) -> set[str]:
-    playlists, names = get_playlists()
+def create_total_track_list(sp:spotipy.Spotify) -> set[str]:
+    platlist_data = get_playlists()
 
     track_ids: set[str] = set()
-    for playlist in playlists:
-        response = get_songs_in_playlist(sp,playlist)
+    for playlist in platlist_data:
+        response = get_songs_in_playlist(sp,playlist[0])
 
         for item in response['items']:
             track_ids.add(item['track']['id'])
@@ -70,3 +74,16 @@ def get_new_playlist_id(sp_personal) -> str:
     if playlist_id:
         return playlist_id
     return create_new_playlist(sp_personal)
+
+def get_song_properties(sp: spotipy.Spotify, track_ids: set[str]) -> list[dict[str,Any]]:
+    track_list: list[str] = list(track_ids)
+    n_tracks = len(track_list)
+    track_features: list[dict[str,Any]] = []
+
+    analysed_tracks: int = 0
+    while analysed_tracks < n_tracks-1:
+        response = sp.audio_features(track_list[analysed_tracks:analysed_tracks+99])
+        analysed_tracks += 99
+        track_features += response
+
+    return track_features

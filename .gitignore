@@ -4,3 +4,4 @@ logfile.log
 .cache
 /__pycache__
 *.db
+scratch.py
