@@ -23,7 +23,6 @@ def update_song_data() -> None:
     """
     Updates the local database with spotify data.
     """
-    # Possibly onl do this is the database does not exist yet, not necesary as failsafes are already built in
     create_database()
     sp_personal, sp = setup_spotify()
 

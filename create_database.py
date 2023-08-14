@@ -1,6 +1,10 @@
 import sqlite3
 
 
+fake_names_table = '''CREATE TABLE IF NOT EXISTS fake_names
+                      (owner_name TEXT PRIMARY KEY,
+                       fake_name TEXT)'''
+
 owner_table = '''CREATE TABLE IF NOT EXISTS owners
                  (playlist_id TEXT PRIMARY KEY,
                   owner_name TEXT,
@@ -21,10 +25,6 @@ track_table = '''CREATE TABLE IF NOT EXISTS songs
                   tempo REAL,
                   time_signature INTEGER,
                   valence REAL CHECK (valence >= 0 AND valence <= 1))'''
-
-fake_names_table = '''CREATE TABLE IF NOT EXISTS fake_names
-                      (owner_name TEXT PRIMARY KEY,
-                       fake_name TEXT)'''
 
 playlist_songs = '''CREATE TABLE IF NOT EXISTS playlist_songs
                     (playlist_id INTEGER,

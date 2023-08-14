@@ -57,8 +57,3 @@ def populate_owner_db(owner_data:list[tuple[str,str,datetime]]):
 
     con.commit()
     con.close()
-
-
-if __name__ == "__main__":
-    owner_data  = get_playlists()
-    populate_owner_db(owner_data)
