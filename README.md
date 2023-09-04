@@ -6,3 +6,6 @@ The inspiration and overview for this project can be found in this [Medium artic
 In order for the program to know which playlists to combine the Playlist IDs of the to be combined playlists needs to be supplied in a `playlists.txt` file in the `secrets` folder.
 There program assumes that each playlist is associated with a month and a year.
 In order for parsing of the file to complete successfully please follow the file structure supplied in `secrets_sample`.
+
+# Running the script
+To run the script and update the total playlist and database: run `playlist_creator.py`.
